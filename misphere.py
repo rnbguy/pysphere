@@ -15,7 +15,6 @@ class MiSphereConn:
 
     def __init__(self):
         self.socket = socket.socket()
-        self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.socket.connect((self.ms_ip, self.ms_tcp_port))
 
     def __del__(self):
@@ -36,7 +35,7 @@ class MiSphereConn:
         payload['msg_id'] = msg_id
         if params is not None:
             for k, v in params.items():
-                payload[k] = v
+                payload[k] = str(v)
         payload['token'] = token
         return payload
 
@@ -53,20 +52,28 @@ class MiSphereConn:
         resp = self.send_recv(CONNECT, token=0)
         self.token = resp['param']
 
-    def switch_camera(self):
-        return self.send_recv(SWITCH_MODE, {'param': '1'})
+    def switch_to_photo(self):
+        return self.send_recv(SWITCH_MODE, {'param': 1})
 
     def get_camera_details(self):
         return self.send_recv(GET_CAMERA)
 
-    def set_photo_exposer_compensation(self, value):
-        return self.send_recv(PHOTO_EXPOSER_COMPENSATION, {'param': str(int(2 * value))})
+    def get_device_details(self):
+        return self.send_recv(GET_DEVICE)
+
+    def set_photo_EV(self, value):
+        return self.send_recv(PHOTO_EV, {'param': int(2 * value)})
+
+    def set_photo_ISO(self, value):
+        return self.send_recv(PHOTO_ISO, {'param': value})
+
+    def set_photo_WB(self, value):
+        return self.send_recv(PHOTO_WB, {'param': value})
 
     def click_picture(self, is_timer=False, print_url=False):
         if self.get_mode()['mode'] != 1:
-            print("changing to camera")
-            self.switch_camera()
-        resp = self.send_recv(CAPTURE_TIMER if is_timer else CAPTURE_START)
+            self.switch_to_photo()
+        resp = self.send_recv(PHOTO_LONGPRESS if is_timer else PHOTO_PRESS)
         assert(resp['rval'] == 0)
         resp = self.recv()
         assert(resp['msg_id'] == 8193)
