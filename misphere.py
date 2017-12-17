@@ -54,13 +54,19 @@ class MiSphereConn:
         self.token = resp['param']
 
     def switch_camera(self):
-        resp = self.send_recv(SWITCH_MODE, {'param': '1'})
+        return self.send_recv(SWITCH_MODE, {'param': '1'})
 
-    def click_picture(self, print_url=False):
+    def get_camera_details(self):
+        return self.send_recv(GET_CAMERA)
+
+    def set_photo_exposer_compensation(self, value):
+        return self.send_recv(PHOTO_EXPOSER_COMPENSATION, {'param': str(int(2 * value))})
+
+    def click_picture(self, is_timer=False, print_url=False):
         if self.get_mode()['mode'] != 1:
             print("changing to camera")
             self.switch_camera()
-        resp = self.send_recv(CAPTURE_START)
+        resp = self.send_recv(CAPTURE_TIMER if is_timer else CAPTURE_START)
         assert(resp['rval'] == 0)
         resp = self.recv()
         assert(resp['msg_id'] == 8193)
