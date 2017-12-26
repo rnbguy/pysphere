@@ -1,12 +1,16 @@
-# pyshpere
-#### control Misphere from terminal
+# pysphere
+#### control 360 MiSphere from anywhere
 
-This is a proof of concept. There is a lot to do.
+![PySphere Camera](https://raw.githubusercontent.com/rnbdev/pysphere/master/img/pysphere_camera.png)
 
-For now, the tool just takes a picture and saves it in current directory.
+This is a proof of concept. There is a lot to do. **DO NOT** use this as your daily usage app.
 
+I have added [Kivy][1] support which means support for PC, Linux, Unix, Android and iOS.
 
-### DISCLAIMER:
+### Pull requests are welcome.
+The whole codebase is a total mess and there are bugs that need to be fixed.
+
+#### DISCLAIMER:
 You use this tool at your own discretion. Nobody, except you, is responsible for any harm or damage caused for this.
 
 
@@ -14,7 +18,9 @@ You use this tool at your own discretion. Nobody, except you, is responsible for
 1. Install Python3.
 2. `pip install -r requirements.txt`
 
-##### Running
-1. Turn on MiShpere.
+##### Run
+1. Turn on MiSphere.
 2. Connect to its WiFi.
-3. Run in terminal `python misphere.py` -- _it will click a picture and save in the current directory._
+3. `python main.py`
+
+[1]: https://kivy.org

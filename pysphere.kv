@@ -1,0 +1,306 @@
+<CustBoxLayout>:
+    orientation: "vertical"
+    ActionBar:
+        ActionView:
+            ActionPrevious:
+                title: "PySphere"
+                with_previous: False
+            ActionOverflow:
+                ActionButton:
+                    text: "Connect"
+                    on_press: root.connect()
+                ActionButton:
+                    text: "Refresh"
+                    on_press: root.refresh()
+                ActionButton:
+                    text: "Disconnect"
+                    on_press: root.disconnect()
+                ActionButton:
+                    text: "Settings"
+                    on_press: app.open_settings()
+                ActionButton:
+                    text: "Poweroff"
+                    on_press: root.poweroff()
+                ActionButton:
+                    text: "Close"
+                    on_press: app.stop()
+    TabbedPanel:
+        do_default_tab: False
+        tab_width: self.width / len(self.tab_list)
+        TabbedPanelItem:
+            text: 'Control'
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 10
+                Spinner:
+                    id: cameraorrecord
+                    text: root.current_module
+                    size_hint_y: None
+                    height: self.texture_size[1] * 2
+                    values: ['Camera', 'Record']
+                    on_text: root.setup_module(self, self.text)
+                BoxLayout:
+                    id: controls
+                    padding: 10
+                    BoxLayout:
+                        id: camera_control
+                        orientation: 'vertical'
+                        BoxLayout:
+                            id: camera_res_box
+                            Label:
+                                text: 'Res'
+                                size_hint_x: 1
+                            Spinner:
+                                id: camera_res_spinner
+                                size_hint_x: 4
+                                text: root.camera_res
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['6912x3456', '3456x1728 (stitched)', '6912x3456 (stitched)', '6912x3456 with RAW']
+                                on_text: root.change_camera_res(self, self.text)
+                        BoxLayout:
+                            id: camera_wb_box
+                            Label:
+                                text: 'WB'
+                                size_hint_x: 1
+                            Spinner:
+                                id: camera_wb_spinner
+                                size_hint_x: 4
+                                text: root.camera_wb
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['Auto', 'Outdoors', 'Overcast', 'Incandescent', 'Fluorescent']
+                                on_text: root.change_camera_wb(self, self.text)
+                        BoxLayout:
+                            id: camera_iso_box
+                            Label:
+                                text: 'ISO'
+                                size_hint_x: 1
+                            Spinner:
+                                id: camera_iso_spinner
+                                size_hint_x: 4
+                                text: root.camera_iso
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['Auto', '50', '100', '200', '400', '800', '1600']
+                                on_text: root.change_camera_iso(self, self.text)
+                        BoxLayout:
+                            id: camera_shutter_box
+                            Label:
+                                text: 'Shutter'
+                                size_hint_x: 1
+                            Spinner:
+                                id: camera_shutter_spinner
+                                size_hint_x: 4
+                                text: root.camera_shutter
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['Auto', '1/6400', '1/3200', '1/2000', '1/1000', '1/500', '1/240', '1/120', '1/60', '1/30', '1/15', '1/8', '1/4', '1', '2', '4', '8', '12', '16', '20', '24', '28', '32']
+                                on_text: root.change_camera_shutter(self, self.text)
+                        BoxLayout:
+                            id: camera_ev_box
+                            Label:
+                                size_hint_x: 1
+                                text: 'EV {}'.format(camera_ev_slider.value)
+                            Slider:
+                                id: camera_ev_slider
+                                size_hint_x: 4
+                                id: camera_ev_slider
+                                min: -3
+                                max: 3
+                                step: 0.5
+                                value: root.camera_ev
+                                on_value: root.change_camera_ev(self, self.value)
+
+                        Spinner:
+                            id: sub_camera
+                            text: root.sub_camera
+                            size_hint_y: None
+                            height: self.texture_size[1] * 2
+                            values: ['None', 'Timer', 'Intervalometer', 'Bracketing']
+                            on_text: root.setup_sub_camera(self, self.text)
+                        BoxLayout:
+                            id: sub_camera_control
+                            orientation: 'vertical'
+                            BoxLayout:
+                                id: timer
+                                Label:
+                                    size_hint_x: 1
+                                    text: '{}s'.format(root.timer_ar[int(timer_slider.value)])
+                                Slider:
+                                    size_hint_x: 4
+                                    id: timer_slider
+                                    min: 0
+                                    max: 7
+                                    step: 1
+                                    value: root.timer_value
+                                    on_value: root.change_camera_to_timer(self, self.value)
+                            BoxLayout:
+                                id: intervalometer
+                                Label:
+                                    size_hint_x: 1
+                                    text: '{}s'.format(root.intervalometer_ar[int(intervalometer_slider.value)])
+                                Slider:
+                                    size_hint_x: 4
+                                    id: intervalometer_slider
+                                    min: 0
+                                    max: 6
+                                    step: 1
+                                    value: root.intervalometer_value
+                                    on_value: root.change_camera_to_intervalometer(self, self.value)
+                            BoxLayout:
+                                id: bracketing
+                                Label:
+                                    size_hint_x: 1
+                                    text: '±{}'.format(root.bracketing_ar[int(bracketing_slider.value)])
+                                Slider:
+                                    size_hint_x: 4
+                                    id: bracketing_slider
+                                    min: 0
+                                    max: 5
+                                    step: 1
+                                    value: root.bracketing_value
+                                    on_value: root.change_camera_to_bracketing(self, self.value)
+                        GridLayout:
+                            spacing: 10
+                            cols: 2
+                            Button:
+                                id: camera_button
+                                text: 'Shutter'
+                                on_release: root.camera_short_press()
+                            Button:
+                                id: camera_long_button
+                                text: 'Shutter long'
+                                on_release: root.camera_long_press()
+                    BoxLayout:
+                        id: record_control
+                        orientation: 'vertical'
+                        BoxLayout:
+                            id: video_res_box
+                            Label:
+                                text: 'Res'
+                                size_hint_x: 1
+                            Spinner:
+                                id: video_res_spinner
+                                size_hint_x: 4
+                                text: root.video_res
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['3456x1728 | 30fps', '2304x1152 | 30fps', '2304x1152 | 60fps', '2048x512 | 120fps', '2048x512 | 120fps bottom (Bullet time)', '3456x1728 | 30fps HighBitrate']
+                                on_text: root.change_video_res(self, self.text)
+                        BoxLayout:
+                            id: video_wb_box
+                            Label:
+                                text: 'WB'
+                                size_hint_x: 1
+                            Spinner:
+                                id: video_wb_spinner
+                                size_hint_x: 4
+                                text: root.video_wb
+                                size_hint_y: None
+                                height: self.texture_size[1] * 2
+                                values: ['Auto', 'Outdoors', 'Overcast', 'Incandescent', 'Fluorescent']
+                                on_text: root.change_video_wb(self, self.text)
+                        BoxLayout:
+                            id: video_ev_box
+                            Label:
+                                size_hint_x: 1
+                                text: 'EV {}'.format(video_ev_slider.value)
+                            Slider:
+                                id: video_ev_slider
+                                size_hint_x: 4
+                                id: video_ev_slider
+                                min: -3
+                                max: 3
+                                step: 0.5
+                                value: root.video_ev
+                                on_value: root.change_video_ev(self, self.value)
+                        Spinner:
+                            id: sub_video
+                            text: root.sub_video
+                            size_hint_y: None
+                            height: self.texture_size[1] * 2
+                            values: ['None', 'Short video', 'Timelapse', 'Slow motion']
+                            on_text: root.setup_sub_video(self, self.text)
+                        BoxLayout:
+                            id: sub_video_control
+                            orientation: 'vertical'
+                            BoxLayout:
+                                id: shortvideo
+                                Label:
+                                    text: '{}s'.format(root.shortvideo_ar[int(shortvideo_slider.value)])
+                                Slider:
+                                    id: shortvideo_slider
+                                    min: 0
+                                    max: len(root.shortvideo_ar) - 1
+                                    step: 1
+                                    value: root.shortvideo_value
+                                    on_value: root.change_video_to_shortvideo(self, self.value)
+                            BoxLayout:
+                                id: timelapse
+                                Label:
+                                    text: '{}s'.format(root.timelapse_ar[int(timelapse_slider.value)])
+                                Slider:
+                                    id: timelapse_slider
+                                    min: 0
+                                    max: len(root.timelapse_ar) - 1
+                                    step: 1
+                                    value: root.timelapse_value
+                                    on_value: root.change_video_to_timelapse(self, self.value)
+                            BoxLayout:
+                                id: slowmotion
+                                Label:
+                                    text: 'x{}'.format(root.slowmotion_ar[int(slowmotion_slider.value)])
+                                Slider:
+                                    id: slowmotion_slider
+                                    min: 0
+                                    max: len(root.slowmotion_ar) - 1
+                                    step: 1
+                                    value: root.slowmotion_value
+                                    on_value: root.change_video_to_slowmotion(self, self.value)
+                        GridLayout:
+                            cols: 3
+                            spacing: 10
+                            Button:
+                                id: video_start
+                                text: 'Record start'
+                                on_release: root.video_start_press()
+                            Button:
+                                id: video_stop
+                                text: 'Record stop'
+                                on_release: root.video_stop_press()
+                            Button:
+                                id: video_long
+                                text: 'Record long'
+                                on_release: root.video_long_press()
+                BoxLayout:
+                    size_hint_y: None
+                    height: '10sp'
+                    Label:
+                        font_size: '10sp'
+                        text: 'Battery {}'.format(root.battery)
+                    Label:
+                        font_size: '10sp'
+                        text: 'free {} of {}'.format(root.sd_free, root.sd_total)
+                    Label:
+                        font_size: '10sp'
+                        text: 'remaining {} of jpg/{} of video'.format(root.remain_jpg, root.remain_video)
+        # TabbedPanelItem:
+        #     text: 'Files'
+        #     BoxLayout:
+        #         orientation: 'vertical'
+        #         Label:
+        #             text: 'Second tab content area'
+        #         Button:
+        #             text: 'Button that does nothing'
+        TabbedPanelItem:
+            text: 'Logs'
+            RstDocument:
+                id: log_view
+                text: ''
+        TabbedPanelItem:
+            text: 'About'
+            RstDocument:
+                text:
+                    '\n'.join(("Hello world", "-----------",
+                    "You are in the third tab."))

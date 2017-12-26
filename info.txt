@@ -1,3 +1,8 @@
 http://192.168.42.1:50422 -- serves DCIM directory over HTTP
+
 rtsp://192.168.42.1/live -- streams live stream preview over RTSP
-tcp://192.168.42.1:7878 - communicates over TCP
+
+tcp://192.168.42.1:7878 -- communicates over TCP
+
+tcp://192.168.42.1:8787 -- sends data for JPG/MP4 previews when msg_id 1025 is sent to 7878.
+but first you have to register your IP using msg_id 261. see REGISTER_TCP and FILE_PREVIEW, in msgids.py
