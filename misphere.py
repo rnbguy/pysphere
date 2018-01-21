@@ -3,7 +3,6 @@ import socket
 import os
 import threading
 import time
-import splitstream
 import io
 import select
 
@@ -41,9 +40,14 @@ class MiSphereConn:
         while self.recv_handle_live:
             r, _, _ = select.select([self.socket], [], [], 0.5)
             if r:
-                resps = self.socket.recv(512)
-                for resp in splitstream.splitfile(io.BytesIO(resps), 'json'):
-                    self.resp_handler(json.loads(resp.decode()))
+                resps = self.socket.recv(512).decode()
+                while True:
+                    resp_dict, idx = json.JSONDecoder().raw_decode(resps)
+                    self.resp_handler(resp_dict)
+                    if idx >= len(resps):
+                        break
+                    else:
+                        resps = resps[idx:]
 
     def resp_handler(self, data):
         if 'rval' in data:
