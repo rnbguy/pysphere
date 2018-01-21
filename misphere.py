@@ -5,6 +5,7 @@ import threading
 import time
 import io
 import select
+import netifaces as ni
 
 from msgids import *
 
@@ -208,7 +209,12 @@ class MiSphereConn:
         return self.recv()
 
     def register_tcp(self, params={}):
-        params = {"param": "192.168.42.3", "type": "TCP"}
+        for e in ni.interfaces():
+            if e.lower().startswith('w'):
+                ip = ni.ifaddresses(e)[ni.AF_INET][0]['addr']
+                if ip.startswith("192.168.42."):
+                    break
+        params = {"param": ip, "type": "TCP"}
         self.send(REGISTER_TCP, params)
         return self.recv()
 
