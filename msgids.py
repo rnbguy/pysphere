@@ -52,7 +52,7 @@ VIDEO_EV = 5137  # if x[-3, 3, .5] on app, param = 2 * x
 
 # responses
 # values for charging and discharging. is value for charging is twice of actual value?
-BATTERY_STATUS = 4361
+BATTERY_STATUS = 4361 # charging values: 68(100%) 132(~60%-99%) 131(~20%-60%) 130(~0%-20%); not charging: 0(~1% - 15%) 1(~25%) 2(~50%) 3(~75%) 4(~90% - %100)
 STANDBY = 4362  # enabled 1, disabled 0
 
 # unknown
